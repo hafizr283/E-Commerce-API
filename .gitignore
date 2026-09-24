@@ -34,3 +34,16 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+# Store development artifacts and local credentials
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.angular/
+/frontend/playwright-report/
+/frontend/test-results/
+/data/
+/config/application-local.properties
+/config/application-mysqltest.properties
+/.env
+/.env.local
+/logs/

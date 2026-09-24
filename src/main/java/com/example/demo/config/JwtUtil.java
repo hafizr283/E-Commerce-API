@@ -1,46 +1,33 @@
 package com.example.demo.config;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Value;
+import com.example.demo.model.User;
+import java.time.Instant;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 @Component
 public class JwtUtil {
+  private final JwtEncoder encoder;
 
-    @Value("${jwt.secret}")
-    private String secret;
+  public JwtUtil(JwtEncoder encoder) {
+    this.encoder = encoder;
+  }
 
-    @Value("${jwt.expiration}")
-    private Long expiration;
-
-    public String generateToken(String email) {
-        return Jwts.builder()
-                .setSubject(email)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS256, secret)
-                .compact();
-    }
-
-    public String extractEmail(String token) {
-        return Jwts.parser()
-                .setSigningKey(secret)
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
-    }
-
-    public boolean isTokenValid(String token) {
-        try {
-            Jwts.parser()
-                    .setSigningKey(secret)
-                    .parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
+  public String generateToken(User user, String sessionId) {
+    Instant now = Instant.now();
+    JwtClaimsSet claims =
+        JwtClaimsSet.builder()
+            .issuer("atelier-api")
+            .subject(user.getEmail())
+            .id(sessionId)
+            .issuedAt(now)
+            .expiresAt(now.plusSeconds(900))
+            .claim("uid", user.getId())
+            .claim("role", user.getRole().name())
+            .build();
+    return encoder
+        .encode(JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims))
+        .getTokenValue();
+  }
 }

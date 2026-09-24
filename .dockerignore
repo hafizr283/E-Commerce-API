@@ -1,0 +1,12 @@
+target
+.git
+.idea
+.vscode
+frontend
+config
+logs
+data
+.env
+.env.local
+coding_qna_practice
+discussion_with_codex.txt

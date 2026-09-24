@@ -1,11 +1,13 @@
 package com.example.demo.repository;
 
+import com.example.demo.model.User;
 import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.demo.model.User;
-
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmail(String email);
+  @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+  @org.springframework.data.jpa.repository.Query("select u from User u where u.id = :id")
+  Optional<User> lockById(Long id);
+
+  Optional<User> findByEmail(String email);
 }

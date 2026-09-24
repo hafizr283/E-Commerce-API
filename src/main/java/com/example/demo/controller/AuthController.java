@@ -1,30 +1,46 @@
 package com.example.demo.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.example.demo.dto.AuthResponse;
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.RegisterRequest;
+import com.example.demo.dto.*;
+import com.example.demo.dto.Views.*;
 import com.example.demo.service.AuthService;
-
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
-@RequiredArgsConstructor
-
+@RequestMapping("/api")
 public class AuthController {
-    private final AuthService authService;
+  private final AuthService auth;
 
-    @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        AuthResponse response = authService.register(request);
-        return ResponseEntity.ok(response);
-    }
+  public AuthController(AuthService auth) {
+    this.auth = auth;
+  }
 
+  @PostMapping("/auth/register")
+  @ResponseStatus(org.springframework.http.HttpStatus.CREATED)
+  public AuthView register(@Valid @RequestBody RegisterRequest req) {
+    return auth.register(req);
+  }
+
+  @PostMapping("/auth/login")
+  public AuthView login(@Valid @RequestBody LoginRequest req) {
+    return auth.login(req);
+  }
+
+  @PostMapping("/auth/refresh")
+  public AuthView refresh(@Valid @RequestBody RefreshRequest req) {
+    return auth.refresh(req.getRefreshToken());
+  }
+
+  @PostMapping("/auth/logout")
+  @ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
+  public void logout(@AuthenticationPrincipal Jwt jwt) {
+    auth.logout(jwt.getId());
+  }
+
+  @GetMapping("/users/me")
+  public UserView me(@AuthenticationPrincipal Jwt jwt) {
+    return auth.me(((Number) jwt.getClaim("uid")).longValue());
+  }
 }
