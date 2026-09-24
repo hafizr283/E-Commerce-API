@@ -99,7 +99,6 @@ frontend/src/app/                 standalone Angular pages and API/session servi
 frontend/e2e/                     browser journeys
 frontend/public/assets/           original product illustrations
 scripts/                          local launch helpers
-summery.md                        durable AI handoff and verification history
 ```
 
 ## Containers and CI
@@ -110,8 +109,8 @@ The Nginx configuration provides SPA routing, an API reverse proxy, security hea
 
 Docker definitions and CI are included but have **not** been executed here: Docker was not available on this machine's PATH and no remote workflow was dispatched. The underlying Java, MySQL, Angular, and browser checks were executed locally.
 
-## Portfolio and next steps
+## Next steps
 
-[CV evidence and demo guide](docs/CV_EVIDENCE.md) contains accurate resume bullets and interview prompts. The purchase workflow is implemented; it is not a claim of production traffic or a public deployment.
+The purchase workflow is implemented; it is not a claim of production traffic or a public deployment.
 
 Before a public commercial launch: integrate a payment provider if needed, implement email verification and password reset, configure tax/shipping for the market, add delivery notifications, deploy behind HTTPS and rate limiting, configure backups/monitoring, and run accessibility, dependency, and load audits. Browser tokens currently use sessionStorage, which is accessible to JavaScript; a hardened deployment should evaluate an HttpOnly-cookie/BFF design with CSRF protection.

@@ -47,3 +47,21 @@ build/
 /.env
 /.env.local
 /logs/
+
+# AI assistant and local notes
+.claude/
+.codex/
+.cursor/
+.gemini/
+discussion_with_codex.txt
+discussion*.txt
+*codex*
+summery.md
+
+# Personal career, CV guidelines, and interview practice
+docs/CV_EVIDENCE.md
+docs/cv*
+docs/CV*
+*cv_evidence*
+*CV_EVIDENCE*
+coding_qna_practice/
